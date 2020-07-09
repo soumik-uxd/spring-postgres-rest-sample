@@ -1,0 +1,66 @@
+package io.github.soumikuxd.employeesapi.controllers;
+
+import io.github.soumikuxd.employeesapi.exceptions.ResourceNotFoundException;
+import io.github.soumikuxd.employeesapi.models.Employee;
+import io.github.soumikuxd.employeesapi.repositories.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("api/v1/")
+public class EmployeeController {
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @GetMapping("employees")
+    public List<Employee> getAllEmployees() {
+        return this.employeeRepository.findAll();
+    }
+
+    @GetMapping("employees/{id}")
+    public ResponseEntity<Employee> getEmployeeById(
+        @PathVariable(value = "id") long employeeId
+    ) throws ResourceNotFoundException {
+        Employee employee = this.employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found for id: " + employeeId));
+        return ResponseEntity.ok().body(employee);
+    }
+
+    @PostMapping("employees")
+    public Employee addEmployee(@RequestBody Employee employee) {
+        return this.employeeRepository.save(employee);
+    }
+
+    @PutMapping("employees/{id}")
+    public ResponseEntity<Employee> updateEmployee(
+            @PathVariable(value = "id") long employeeId,
+            @Validated @RequestBody Employee updatedEmployee
+    ) throws ResourceNotFoundException {
+        Employee employee = this.employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found for id: " + employeeId));
+        employee.setFirstName(updatedEmployee.getFirstName());
+        employee.setLastName(updatedEmployee.getLastName());
+        employee.setEmail(updatedEmployee.getEmail());
+
+        return ResponseEntity.ok(this.employeeRepository.save(employee));
+    }
+
+    @DeleteMapping("employees/{id}")
+    public Map<String, Boolean> removeEmployee(
+        @PathVariable(value = "id") long employeeId
+    ) throws ResourceNotFoundException {
+        Employee employee = this.employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found for id: " + employeeId));
+        this.employeeRepository.delete(employee);
+
+        Map<String, Boolean> response = new HashMap<String, Boolean>();
+        response.put("deleted", Boolean.TRUE);
+        return response;
+    }
+}
