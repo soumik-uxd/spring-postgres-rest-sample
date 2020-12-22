@@ -8,39 +8,57 @@ Clone the repository
 ```bash
 git clone <repo>
 ```
-
-#### 2. Adjust DB connection properties
-Change the DB connection properties in the `application.properties`. The current values are listed as below:
-```yaml
-spring.datasource.url=jdbc:postgresql://localhost:5432/employeedb
-spring.datasource.username=postgres
-spring.datasource.password=root
-spring.jpa.show-sql=true
-
-# Hibernate properties
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-
-# Hibernate ddl auto
-spring.jpa.hibernate.ddl-auto=update
+#### 2. Build the application (optional)
+The application will be automatically built if `docker-compose` is used (see below). But if we wish to do a local build, we need to first install the dependencies
+```bash
+./mvnw clean install
 ```
+Then we build the packages
+```bash
+./mvnw -V -B -DskipTests clean package verify
+```
+#### 3. Run the application
+The aplication requires a postgres datasource, there are two spring profiles default and docker. The docker profile is configured to use a local container running a postgres instance. If you wish to use the docker profile (the easier approach), please refer the `docker-compose` below.
 
-#### 3. Start the DB
-Either a locally installed or a local Docker image is required. In case a docker image is used (preferably Postgres 10), the below commands can be used as a sample.
+For the default spring profile you need to create your own postgres datasource and create a `.env` file with the below details.
+```env
+DB_URL=jdbc:postgresql://<hostname>>:<port>/<database name>
+DB_USERNAME=<username>
+DB_PASSWORD=<passsword>
+``` 
 
+To create your own local postgres instance you can use the below commands as a sample.
 ```bash
 docker run -d --name testdb -v testdb-data:/var/lib/postgresql/data -e POSTGRES_PASSWORD=root -p 5432:5432 postgres:10.13
 docker exec -it testdb psql -U postgres -c "CREATE DATABASE employeedb;"
 docker exec -it testdb psql -U postgres -c "\c employeedb"               
 ```
+The env file then can be adjusted tp
+```env
+DB_URL=jdbc:postgresql://localhost:5342/employeedb
+DB_USERNAME=postgres
+DB_PASSWORD=root
+``` 
 
-To stop the DB run
+We the load the env vars
 ```bash
-docker stop testdb
+export $(cat .env | xargs)
 ```
-
-#### 4. Start the application
+Then start the application using
 ```bash
 ./mvnw spring-boot:run
 ```
 
-Once done the endpoint is available at `http:\\localhost:8080\api\v1\employees\`
+The easier way would be to use `docker-compose`.
+```env
+docker-compose up -d
+```
+
+Once done the endpoint is available at `http:\\localhost:8080\api\v1\employee\`
+
+For testing the application a [sample postman collection json](./EmployeeAPI.postman_collection.json) has been also provided.
+
+When done the app and the db can be stopped using
+```env
+docker-compose down
+```
