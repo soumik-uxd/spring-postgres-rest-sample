@@ -29,6 +29,7 @@ Either a locally installed or a local Docker image is required. In case a docker
 
 ```bash
 docker run -d --name testdb -v testdb-data:/var/lib/postgresql/data -e POSTGRES_PASSWORD=root -p 5432:5432 postgres:10.13
+docker exec -it testdb psql -U postgres -c "CREATE DATABASE employeedb;"
 docker exec -it testdb psql -U postgres -c "\c employeedb"               
 ```
 
