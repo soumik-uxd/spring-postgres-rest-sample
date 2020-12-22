@@ -13,17 +13,17 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/v1/")
+@RequestMapping("api/v1/employee")
 public class EmployeeController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    @GetMapping("employees")
+    @GetMapping("/all")
     public List<Employee> getAllEmployees() {
         return this.employeeRepository.findAll();
     }
 
-    @GetMapping("employees/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(
         @PathVariable(value = "id") long employeeId
     ) throws ResourceNotFoundException {
@@ -32,12 +32,12 @@ public class EmployeeController {
         return ResponseEntity.ok().body(employee);
     }
 
-    @PostMapping("employees")
+    @PostMapping("/add")
     public Employee addEmployee(@RequestBody Employee employee) {
         return this.employeeRepository.save(employee);
     }
 
-    @PutMapping("employees/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Employee> updateEmployee(
             @PathVariable(value = "id") long employeeId,
             @Validated @RequestBody Employee updatedEmployee
@@ -51,7 +51,7 @@ public class EmployeeController {
         return ResponseEntity.ok(this.employeeRepository.save(employee));
     }
 
-    @DeleteMapping("employees/{id}")
+    @DeleteMapping("/{id}")
     public Map<String, Boolean> removeEmployee(
         @PathVariable(value = "id") long employeeId
     ) throws ResourceNotFoundException {
