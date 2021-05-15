@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "50dbaa40-0a6a-48f7-90cf-879386ad81b6",
+		"_postman_id": "83ce3efe-9fb5-4e7f-b55d-66eef37266aa",
 		"name": "EmployeeDB",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -158,7 +158,46 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "API docs",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v2/api-docs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"api-docs"
+					]
+				},
+				"description": "API docs\n"
+			},
+			"response": []
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
